@@ -31,7 +31,6 @@ public class DailyBonusSystem : MonoBehaviour
 
         for (int i = 2; i < numberOfDays; i++)
         {
-            Debug.Log(rewardList[i - 1] / 100 * 60);
             temp = (int)(rewardList[i - 2] + rewardList[i - 1] / 100 * 60);
             rewardList.Add(temp);
         }
