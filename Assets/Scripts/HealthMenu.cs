@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthMenu : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class HealthMenu : MonoBehaviour
     [SerializeField] GameObject buttonUseLife;
     [SerializeField] GameObject buttonRefillLives;
     [SerializeField] GameObject timer;
+    [SerializeField] VerticalLayoutGroup verticalLayoutGroup;
 
     private void OnEnable()
     {
@@ -26,18 +28,21 @@ public class HealthMenu : MonoBehaviour
         {
             buttonUseLife.SetActive(false);
             buttonRefillLives.SetActive(true);
+            verticalLayoutGroup.padding = new RectOffset(0, 0, 0, 0);
             timer.SetActive(true);
         }
         else if (health == HealthSystem.Singleton.MaximumHealth)
         {
             buttonUseLife.SetActive(true);
             buttonRefillLives.SetActive(false);
+            verticalLayoutGroup.padding = new RectOffset(0, 0, 0, 0);
             timer.SetActive(false);
         }
         else
         {
             buttonUseLife.SetActive(true);
             buttonRefillLives.SetActive(true);
+            verticalLayoutGroup.padding = new RectOffset(50, 50, 0, 0);
             timer.SetActive(true);
         }
     }
