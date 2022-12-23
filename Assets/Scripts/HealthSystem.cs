@@ -12,18 +12,21 @@ public class HealthSystem : MonoBehaviour
     public static Action<int> OnHealthUpdate;
     public static Action<string> OnTimeUntilUpdate;
 
+    public int MaximumHealth => maxHP;
+    public int CurrentHealth => currentHP;
+
     [Header("Settings")]
     [SerializeField] int maxHP = 5;
     [SerializeField, Tooltip("In seconds")] float recoverInterval = 20f;
     //only for testing
     [SerializeField] int startHP = 0;
 
-
+    bool coroStarted = false;
     string timeUntil;
     int currentHP;
     DateTime startTime, endTime; //using DateTime for posibility of saving endTime to Prefs or elsewhere and calculate new hp
 
-    public void Start()
+    private void Awake()
     {
         #region Singleton
         if (!Singleton) Singleton = this;
@@ -41,8 +44,14 @@ public class HealthSystem : MonoBehaviour
 
     public void CheckHealth()
     {
-        if (currentHP < maxHP)
+        if (currentHP < maxHP && !coroStarted)
             StartTimer();
+        else if (currentHP == maxHP)
+        {
+            StopAllCoroutines();
+            coroStarted = false;
+            OnTimeUntilUpdate?.Invoke("Full");
+        }
     }
 
     public void StartTimer()
@@ -57,24 +66,32 @@ public class HealthSystem : MonoBehaviour
 
     public void RemoveHealth(int amount = 1)
     {
-        currentHP += amount;
+        currentHP -= amount;
+        if (currentHP < 0) currentHP = 0;
+
         OnHealthUpdate?.Invoke(currentHP);
+        CheckHealth();
     }
 
-    void AddHealth(int amount = 1)
-    { 
+    public void AddHealth(int amount = 1)
+    {
         currentHP += amount;
+        if (currentHP > maxHP) currentHP = maxHP;
+
         OnHealthUpdate?.Invoke(currentHP);
+        CheckHealth();
     }
 
     IEnumerator HealthTimer()
     {
+        coroStarted = true;
         while (DateTime.Now < endTime)
         {
             timeUntil = (endTime - DateTime.Now).ToString(@"mm\:ss");
             OnTimeUntilUpdate?.Invoke(timeUntil);
             yield return new WaitForSecondsRealtime(.2f);
         }
+        coroStarted = false;
         AddHealth();
         CheckHealth();
     }

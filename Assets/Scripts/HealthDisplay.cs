@@ -13,6 +13,11 @@ public class HealthDisplay : MonoBehaviour
         HealthSystem.OnHealthUpdate += OnHealthUpdate;
     }
 
+    private void OnEnable()
+    {
+        OnHealthUpdate(HealthSystem.Singleton.CurrentHealth);
+    }
+
     void OnHealthUpdate(int health) 
     {
         healthText.text = health.ToString();
