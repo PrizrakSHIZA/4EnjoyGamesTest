@@ -17,7 +17,7 @@ public class HealthMenu : MonoBehaviour
     {
         if(!animator)
             animator = GetComponent<Animator>();
-        animator.Play("HealthMenuIn");
+        animator.Play("MenuIn");
         HealthSystem.OnHealthUpdate += OnHealthUpdate;
         OnHealthUpdate(HealthSystem.Singleton.CurrentHealth);
     }
@@ -59,7 +59,7 @@ public class HealthMenu : MonoBehaviour
 
     public void StartCloseAnimation()
     {
-        animator.Play("HealthMenuOut");
+        animator.Play("MenuOut");
     }
 
     public void AnimationEnd()
